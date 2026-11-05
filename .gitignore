@@ -1,0 +1,56 @@
+# --- Fichiers et dossiers Visual Studio ---
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# --- Build ---
+bin/
+obj/
+out/
+Debug/
+Release/
+
+# --- Paquets NuGet ---
+*.nupkg
+*.snupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+# --- Logs ---
+*.log
+
+# --- Fichiers temporaires ---
+*.tmp
+*.temp
+*.cache
+*.bak
+
+# --- Fichiers système ---
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# --- ASP.NET Core ---
+wwwroot/lib/
+wwwroot/node_modules/
+appsettings.Development.json
+appsettings.Local.json
+
+# --- Node / Front-end ---
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+
+# --- Autres fichiers à ignorer ---
+*.dbmdl
+*.jfm
+*.pfx
+*.publishsettings
+*.psess
+*.vsp
+*.vspscc
+*.vssscc
