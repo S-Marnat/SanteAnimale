@@ -10,5 +10,18 @@ namespace SanteAnimale.Auth.Api.Data
         public AuthDbContext(DbContextOptions<AuthDbContext> options) : base(options)
         {
         }
+
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            // -- Relation RefreshToken -> ApplicationUser --
+            modelBuilder.Entity<RefreshToken>()
+                .HasOne(rt => rt.User)
+                .WithMany()
+                .HasForeignKey(rt => rt.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        }
     }
 }
