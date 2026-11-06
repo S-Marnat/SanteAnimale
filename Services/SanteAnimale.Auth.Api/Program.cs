@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SanteAnimale.Auth.Api.Data;
 using SanteAnimale.Auth.Api.Entities;
+using SanteAnimale.Auth.Api.Middlewares;
 using SanteAnimale.Auth.Api.Repositories.Implementations;
 using SanteAnimale.Auth.Api.Repositories.Interfaces;
 using SanteAnimale.Auth.Api.Services.Implementations;
@@ -85,8 +86,11 @@ if (app.Environment.IsDevelopment())
     app.MapOpenApi();
 }
 
+app.UseMiddleware<RequestLoggingMiddleware>();
+
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
