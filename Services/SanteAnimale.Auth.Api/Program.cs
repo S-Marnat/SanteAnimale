@@ -18,6 +18,8 @@ ConfigurationManager configuration = builder.Configuration;
 // Configuration des dépendances
 builder.Services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
 
+builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 
@@ -78,6 +80,48 @@ builder.Services.AddAuthorization();
 
 // Construction de l'API
 var app = builder.Build();
+
+
+// Création des rôles et de l'utilisateur administrateur
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+    // Création des rôles
+    if (!await roleManager.RoleExistsAsync("Admin"))
+        await roleManager.CreateAsync(new IdentityRole<int>("Admin"));
+
+    if (!await roleManager.RoleExistsAsync("User"))
+        await roleManager.CreateAsync(new IdentityRole<int>("User"));
+
+    // Création de l'utilisateur administrateur
+    var adminEmail = builder.Configuration["Admin:Email"];
+    var adminPassword = builder.Configuration["Admin:Password"];
+
+    if (!string.IsNullOrWhiteSpace(adminEmail) && !string.IsNullOrWhiteSpace(adminPassword))
+    {
+        var adminUser = await userManager.FindByEmailAsync(adminEmail);
+
+        if (adminUser == null)
+        {
+            adminUser = new ApplicationUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail
+            };
+
+            var result = await userManager.CreateAsync(adminUser, adminPassword);
+
+            if (!result.Succeeded)
+                throw new Exception($"Erreur lors de la création de l'utilisateur administrateur :" +
+                    $"{string.Join(", ", result.Errors.Select(e => e.Description))}");
+        }
+
+        if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+            await userManager.AddToRoleAsync(adminUser, "Admin");
+    }
+}
 
 
 // Pipeline HTTP
