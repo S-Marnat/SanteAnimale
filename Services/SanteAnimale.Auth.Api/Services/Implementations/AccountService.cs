@@ -2,6 +2,7 @@
 using SanteAnimale.Auth.Api.DTOs.Account;
 using SanteAnimale.Auth.Api.Entities;
 using SanteAnimale.Auth.Api.Services.Interfaces;
+using System.Security.Claims;
 
 namespace SanteAnimale.Auth.Api.Services.Implementations
 {
@@ -16,24 +17,24 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             _logger = logger;
         }
 
-        public async Task ChangeEmailAsync(ChangeEmailDTO changeEmailDto)
+        public async Task ChangeEmailAsync(ChangeEmailDTO changeEmailDto, int userId)
         {
             // Vérifier que l'utilisateur existe
-            var user = await _userManager.FindByIdAsync(changeEmailDto.UserId.ToString());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
 
             if (user == null)
             {
                 _logger.LogWarning("Echec de la modification de l'adresse e-mail pour l'utilisateur {UserId} : utilisateur introuvable.",
-                    changeEmailDto.UserId);
+                    userId);
                 throw new InvalidOperationException("Utilisateur introuvable.");
             }
 
             // Vérifier que le nouvel e-mail n'est pas déjà utilisé
             var existingUser = await _userManager.FindByEmailAsync(changeEmailDto.NewEmail);
-            if (existingUser != null && (existingUser.Id != changeEmailDto.UserId))
+            if (existingUser != null && (existingUser.Id != userId))
             {
                 _logger.LogWarning("Echec de la modification de l'adresse e-mail pour l'utilisateur {UserId} : l'adresse e-mail est déjà utilisée.",
-                    changeEmailDto.UserId);
+                    userId);
                 throw new InvalidOperationException("L'adresse e-mail est déjà utilisée.");
             }
 
@@ -43,7 +44,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             if (!resultEmail.Succeeded)
             {
                 _logger.LogWarning("Echec de la modification de l'adresse e-mail pour l'utilisateur {UserId} : {Erreur}.",
-                    changeEmailDto.UserId, string.Join(", ", resultEmail.Errors.Select(e => e.Description)));
+                    userId, string.Join(", ", resultEmail.Errors.Select(e => e.Description)));
                 throw new InvalidOperationException("Erreur lors de la modification de l'adresse e-mail : " +
                     string.Join(", ", resultEmail.Errors.Select(e => e.Description)));
             }
@@ -54,7 +55,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             if (!resultUserName.Succeeded)
             {
                 _logger.LogWarning("Echec de la modification du nom d'utilisateur pour l'utilisateur {UserId} : {Erreur}.",
-                    changeEmailDto.UserId, string.Join(", ", resultUserName.Errors.Select(e => e.Description)));
+                    userId, string.Join(", ", resultUserName.Errors.Select(e => e.Description)));
 
                 // Rétablir l'ancien e-mail en cas d'échec de la modification du nom d'utilisateur
                 var resultRevertEmail = await _userManager.SetEmailAsync(user, user.Email);
@@ -62,7 +63,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
                 if (!resultRevertEmail.Succeeded)
                 {
                     _logger.LogWarning("Echec de la restauration de l'adresse e-mail pour l'utilisateur {UserId} après un échec de la modification du nom d'utilisateur : {Erreur}.",
-                        changeEmailDto.UserId, string.Join(", ", resultRevertEmail.Errors.Select(e => e.Description)));
+                        userId, string.Join(", ", resultRevertEmail.Errors.Select(e => e.Description)));
                 }
 
                 throw new InvalidOperationException("Erreur lors de la modification du nom d'utilisateur : " +
@@ -70,18 +71,18 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             }
 
             _logger.LogInformation("Adresse e-mail modifiée avec succès pour l'utilisateur {UserId}.",
-                changeEmailDto.UserId);
+                userId);
         }
 
-        public async Task ChangePasswordAsync(ChangePasswordDTO changePasswordDto)
+        public async Task ChangePasswordAsync(ChangePasswordDTO changePasswordDto, int userId)
         {
             // Vérifier que l'utilisateur existe
-            var user = await _userManager.FindByIdAsync(changePasswordDto.UserId.ToString());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
 
             if (user == null)
             {
                 _logger.LogWarning("Echec de la modification du mot de passe pour l'utilisateur {UserId} : utilisateur introuvable.",
-                    changePasswordDto.UserId);
+                    userId);
                 throw new InvalidOperationException("Utilisateur introuvable.");
             }
 
@@ -91,7 +92,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             if (!passwordCheck)
             {
                 _logger.LogWarning("Echec de la modification du mot de passe pour l'utilisateur {UserId} : ancien mot de passe incorrect.",
-                    changePasswordDto.UserId);
+                    userId);
                 throw new InvalidOperationException("Ancien mot de passe incorrect.");
             }
 
@@ -99,7 +100,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             if (changePasswordDto.NewPassword != changePasswordDto.ConfirmNewPassword)
             {
                 _logger.LogWarning("Echec de la modification du mot de passe pour l'utilisateur {UserId} : les nouveaux mots de passe ne correspondent pas.",
-                    changePasswordDto.UserId);
+                    userId);
                 throw new InvalidOperationException("Les nouveaux mots de passe ne correspondent pas.");
             }
 
@@ -107,7 +108,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             if (changePasswordDto.NewPassword == changePasswordDto.OldPassword)
             {
                 _logger.LogWarning("Echec de la modification du mot de passe pour l'utilisateur {UserId} : le nouveau mot de passe est identique à l'ancien.",
-                    changePasswordDto.UserId);
+                    userId);
                 throw new InvalidOperationException("Le nouveau mot de passe est identique à l'ancien.");
             }
 
@@ -117,24 +118,24 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             if (!result.Succeeded)
             {
                 _logger.LogWarning("Echec de la modification du mot de passe pour l'utilisateur {UserId} : {Erreur}.",
-                    changePasswordDto.UserId, string.Join(", ", result.Errors.Select(e => e.Description)));
+                    userId, string.Join(", ", result.Errors.Select(e => e.Description)));
                 throw new InvalidOperationException("Erreur lors de la modification du mot de passe : " +
                     string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
             _logger.LogInformation("Mot de passe modifié avec succès pour l'utilisateur {UserId}.",
-                changePasswordDto.UserId);
+                userId);
         }
 
-        public async Task DeleteAccountAsync(DeleteAccountDTO deleteAccountDto)
+        public async Task DeleteAccountAsync(int userId)
         {
             // Vérifier que l'utilisateur existe
-            var user = await _userManager.FindByIdAsync(deleteAccountDto.UserId.ToString());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
 
             if (user == null)
             {
                 _logger.LogWarning("Echec de la suppression du compte pour l'utilisateur {UserId} : utilisateur introuvable.",
-                    deleteAccountDto.UserId);
+                    userId);
                 throw new InvalidOperationException("Utilisateur introuvable.");
             }
 
@@ -148,13 +149,13 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             if (!result.Succeeded)
             {
                 _logger.LogWarning("Echec de la suppression du compte pour l'utilisateur {UserId} : {Erreur}.",
-                    deleteAccountDto.UserId, string.Join(", ", result.Errors.Select(e => e.Description)));
+                    userId, string.Join(", ", result.Errors.Select(e => e.Description)));
                 throw new InvalidOperationException("Erreur lors de la suppression du compte : " +
                     string.Join(", ", result.Errors.Select(e => e.Description)));
             }
 
             _logger.LogInformation("Compte supprimé avec succès pour l'utilisateur {UserId}.",
-                deleteAccountDto.UserId);
+                userId);
         }
     }
 }

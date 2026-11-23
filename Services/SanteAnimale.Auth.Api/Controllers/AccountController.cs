@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SanteAnimale.Auth.Api.DTOs.Account;
 using SanteAnimale.Auth.Api.Services.Interfaces;
+using System.Security.Claims;
 
 namespace SanteAnimale.Auth.Api.Controllers
 {
@@ -22,17 +23,20 @@ namespace SanteAnimale.Auth.Api.Controllers
         [HttpPost("change-password")]
         public async Task<IActionResult> ChangePassword(ChangePasswordDTO changePasswordDto)
         {
-            _logger.LogInformation("Tentative de modification du mot de passe pour l'utilisateur {UserId}.", changePasswordDto.UserId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            _logger.LogInformation("Tentative de modification du mot de passe pour l'utilisateur {UserId}.",
+                userId);
 
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Echec de la modification du mot de passe pour l'utilisateur {UserId} : données invalides.", changePasswordDto.UserId);
+                _logger.LogWarning("Echec de la modification du mot de passe pour l'utilisateur {UserId} : données invalides.",
+                    userId);
                 return BadRequest("Les données fournies sont invalides.");
             }
 
             try
             {
-                await _accountService.ChangePasswordAsync(changePasswordDto);
+                await _accountService.ChangePasswordAsync(changePasswordDto, int.Parse(userId));
                 return Ok("Mot de passe modifié avec succès.");
             }
             catch (InvalidOperationException ex)
@@ -41,7 +45,8 @@ namespace SanteAnimale.Auth.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur inattendue lors de la modification du mot de passe pour l'utilisateur {UserId}.", changePasswordDto.UserId);
+                _logger.LogError(ex, "Erreur inattendue lors de la modification du mot de passe pour l'utilisateur {UserId}.",
+                    userId);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Une erreur interne est survenue.");
             }
         }
@@ -49,17 +54,20 @@ namespace SanteAnimale.Auth.Api.Controllers
         [HttpPost("change-email")]
         public async Task<IActionResult> ChangeEmail(ChangeEmailDTO changeEmailDto)
         {
-            _logger.LogInformation("Tentative de modification de l'adresse e-mail pour l'utilisateur {UserId}.", changeEmailDto.UserId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            _logger.LogInformation("Tentative de modification de l'adresse e-mail pour l'utilisateur {UserId}.",
+                userId);
 
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Echec de la modification de l'adresse e-mail pour l'utilisateur {UserId} : données invalides.", changeEmailDto.UserId);
+                _logger.LogWarning("Echec de la modification de l'adresse e-mail pour l'utilisateur {UserId} : données invalides.",
+                    userId);
                 return BadRequest("Les données fournies sont invalides.");
             }
 
             try
             {
-                await _accountService.ChangeEmailAsync(changeEmailDto);
+                await _accountService.ChangeEmailAsync(changeEmailDto, int.Parse(userId));
                 return Ok("Adresse e-mail modifiée avec succès.");
             }
             catch (InvalidOperationException ex)
@@ -68,25 +76,29 @@ namespace SanteAnimale.Auth.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur inattendue lors de la modification de l'adresse e-mail pour l'utilisateur {UserId}.", changeEmailDto.UserId);
+                _logger.LogError(ex, "Erreur inattendue lors de la modification de l'adresse e-mail pour l'utilisateur {UserId}.",
+                    userId);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Une erreur interne est survenue.");
             }
         }
 
         [HttpDelete("delete-account")]
-        public async Task<IActionResult> DeleteAccount(DeleteAccountDTO deleteAccountDto)
+        public async Task<IActionResult> DeleteAccount()
         {
-            _logger.LogInformation("Tentative de suppression du compte pour l'utilisateur {UserId}.", deleteAccountDto.UserId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            _logger.LogInformation("Tentative de suppression du compte pour l'utilisateur {UserId}.",
+                userId);
 
             if (!ModelState.IsValid)
             {
-                _logger.LogWarning("Echec de la suppression du compte pour l'utilisateur {UserId} : données invalides.", deleteAccountDto.UserId);
+                _logger.LogWarning("Echec de la suppression du compte pour l'utilisateur {UserId} : données invalides.",
+                    userId);
                 return BadRequest("Les données fournies sont invalides.");
             }
 
             try
             {
-                await _accountService.DeleteAccountAsync(deleteAccountDto);
+                await _accountService.DeleteAccountAsync(int.Parse(userId));
                 return Ok("Compte supprimé avec succès");
             }
             catch (InvalidOperationException ex)
@@ -95,7 +107,8 @@ namespace SanteAnimale.Auth.Api.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Erreur inattendue lors de la suppression du compte pour l'utilisateur {UserId}.", deleteAccountDto.UserId);
+                _logger.LogError(ex, "Erreur inattendue lors de la suppression du compte pour l'utilisateur {UserId}.",
+                    userId);
                 return StatusCode(StatusCodes.Status500InternalServerError, "Une erreur interne est survenue.");
             }
         }

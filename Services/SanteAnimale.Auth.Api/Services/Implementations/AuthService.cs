@@ -58,7 +58,14 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             }
 
             // Vérifier si le mot de passe correspond
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, lockoutOnFailure: true);
+
+            if (result.IsLockedOut)
+            {
+                _logger.LogWarning("Echec de la connexion pour l'utilisateur {Email} : compte verrouillé.",
+                    loginDto.Email);
+                throw new UnauthorizedAccessException("Compte verrouillé. Veuillez réessayer plus tard.");
+            }
 
             if (!result.Succeeded)
             {
