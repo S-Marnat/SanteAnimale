@@ -4,7 +4,7 @@
 
 **L’application est actuellement en cours de développement.**
 
-La solution est créée grâce à ASP.NET Core 10.0, et utilise la structure en microservice.
+La solution est créée grâce à ASP.NET Core 11.0, et utilise la structure en microservice.
 La solution comprendra :
   - 7 projets Back-End de type API ;
   - 1 projet Front-End (ou un front par fonctionnalité, au besoin) ;
@@ -18,23 +18,34 @@ Les suppressions en cascade se dérouleront dans un ordre bien précis :
 Ainsi, en cas d’erreurs de la suppression, l’élément initial existe toujours et l’utilisateur peut recommencer à tenter la suppression.
 
 
-## Auth
+## Auth (en cours d’implémentation)
 
 Identité et authentification
 Projet API, utilise Identity, EF Core, JWT
-Gère la connexion à l’application.
+Gère la connexion à l’application et la gestion des informations de connexion.
 
-- Inscription d’un nouveau propriétaire
-- Connexion d’un propriétaire existant
-- Déconnexion d’un propriétaire
-- Gestion du mot de passe oublié
+- Authentification :
+  - Inscription d’un nouveau propriétaire
+  - Connexion d’un propriétaire existant
+  - Déconnexion d’un propriétaire
+  - Gestion du mot de passe oublié
+
+- Gestion des informations de connexion par un propriétaire :
+  - Modification du mot de passe
+  - Modification de l’email de connexion
+  - Suppression du compte
+
+- Gestion des comptes par l’Administrateur de l’application :
+  - Affichage d’un compte par son email
+  - Affichage d’un compte par son Id
+  - Suppression d’un compte
 
 Le service Auth est le seul service responsable de l’authentification et du stockage des données Identity.
 Les autres services utilisent l’authentification JWT afin d’autoriser l’accès à leurs endpoints.
 Le service Auth ne gère que les informations utiles à Identity, le profil du propriétaire est géré par le service Profils.
 
 
-## FrontWeb
+## FrontWeb (non implémenté)
 
 Interface utilisateur Web
 Projet MVC, utilise JWT
@@ -43,14 +54,14 @@ Gère l’interface utilisateur Web de l’application.
 Au besoin, le front pourra être divisé en plusieurs projets pour plus de clarté.
 
 
-## Gateway
+## Gateway (non implémenté)
 
 Passerelle
 Projet minimal, utilise Ocelot, JWT
 Sert de passerelle entre les différents projets.
 
 
-## Notes
+## Notes (non implémenté)
 
 Contenu libre et potentiellement pièces jointes
 Projet API, utilise MongoDB, JWT
@@ -66,7 +77,7 @@ Accepte l’ajout de documents (ordonnance, facture, résultat d’analyse, radi
 Le propriétaire ajoute lui-même ces notes, et non les professionnels qui n’ont pas accès aux données des propriétaires.
 
 
-## Planning
+## Planning (non implémenté)
 
 Calendrier et rappels
 Projet API, utilise EF Core, JWT
@@ -92,7 +103,7 @@ Si un praticien est supprimé, les rendez-vous qui lui sont liés voient leur ch
 Une gestion d’envoi de notifications pourra être ajoutée ultérieurement (rappels, etc.).
 
 
-## Prévention
+## Prévention (non implémenté)
 
 Historique vaccinal, vermifuge et antipuce
 Projet API, utilise EF Core, JWT
@@ -116,7 +127,7 @@ Gère les vaccinations, la prise de vermifuges et d’antipuces de l’animal du
 Une gestion de création automatique de rappels pourra être ajoutée ultérieurement (rappels de vaccins, prises d’antipuces et de vermifuges).
 
 
-## Profils
+## Profils (non implémenté)
 
 Propriétaires, animaux et praticiens
 Projet API, utilise EF Core, JWT
@@ -148,7 +159,7 @@ Le propriétaire peut exporter le carnet de santé de chacun de ses animaux au f
   - Suppression d’un praticien
 
 
-## Soins
+## Soins (non implémenté)
 
 Ordonnances et traitements
 Projet API, utilise EF Core, JWT
@@ -178,7 +189,7 @@ Gère les soins à apporter à un animal du propriétaire.
   - Suppression d’une prise de traitement
 
 
-## Surveillances
+## Surveillances (non implémenté)
 
 Données de suivi
 Projet API, utilise EF Core, JWT
