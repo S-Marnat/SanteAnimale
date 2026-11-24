@@ -6,6 +6,7 @@ namespace SanteAnimale.Auth.Api.DTOs.Auth
     {
         [Required]
         [EmailAddress]
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
         public string Email { get; set; } = string.Empty;
 
         [Required]
