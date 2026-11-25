@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="Services/SanteAnimale.Auth.Api/SanteAnimale.Auth.Api.csproj" />
+  <Project Path="Tests/SanteAnimale.Auth.Tests/SanteAnimale.Auth.Tests.csproj" Id="7bf8b030-53fa-4775-bd80-2d246da919e3" />
 </Solution>

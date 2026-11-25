@@ -21,11 +21,18 @@ namespace SanteAnimale.Auth.Api.Controllers
         }
 
         [HttpPost("change-password")]
-        public async Task<IActionResult> ChangePassword(ChangePasswordDTO changePasswordDto)
+        public async Task<IActionResult> ChangePasswordAsync(ChangePasswordDTO changePasswordDto)
         {
+            _logger.LogInformation("Tentative de modification d'un mot de passe.");
+            
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            _logger.LogInformation("Tentative de modification du mot de passe pour l'utilisateur {UserId}.",
-                userId);
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                _logger.LogWarning("Echec de la modification du mot de passe pour l'utilisateur {UserId} : utilisateur non authentifié.",
+                    userId);
+                return Unauthorized("Utilisateur non authentifié.");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -52,11 +59,18 @@ namespace SanteAnimale.Auth.Api.Controllers
         }
 
         [HttpPost("change-email")]
-        public async Task<IActionResult> ChangeEmail(ChangeEmailDTO changeEmailDto)
+        public async Task<IActionResult> ChangeEmailAsync(ChangeEmailDTO changeEmailDto)
         {
+            _logger.LogInformation("Tentative de modification d'une adresse e-mail.");
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            _logger.LogInformation("Tentative de modification de l'adresse e-mail pour l'utilisateur {UserId}.",
-                userId);
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                _logger.LogWarning("Echec de la modification de l'adresse e-mail pour l'utilisateur {UserId} : utilisateur non authentifié.",
+                    userId);
+                return Unauthorized("Utilisateur non authentifié.");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -83,11 +97,18 @@ namespace SanteAnimale.Auth.Api.Controllers
         }
 
         [HttpDelete("delete-account")]
-        public async Task<IActionResult> DeleteAccount()
+        public async Task<IActionResult> DeleteAccountAsync()
         {
+            _logger.LogInformation("Tentative de suppression d'un compte utilisateur.");
+
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            _logger.LogInformation("Tentative de suppression du compte pour l'utilisateur {UserId}.",
-                userId);
+
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                _logger.LogWarning("Echec de la suppression du compte pour l'utilisateur {UserId} : utilisateur non authentifié.",
+                    userId);
+                return Unauthorized("Utilisateur non authentifié.");
+            }
 
             if (!ModelState.IsValid)
             {
@@ -99,7 +120,7 @@ namespace SanteAnimale.Auth.Api.Controllers
             try
             {
                 await _accountService.DeleteAccountAsync(int.Parse(userId));
-                return Ok("Compte supprimé avec succès");
+                return Ok("Compte supprimé avec succès.");
             }
             catch (InvalidOperationException ex)
             {
