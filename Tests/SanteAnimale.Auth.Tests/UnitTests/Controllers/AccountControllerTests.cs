@@ -52,6 +52,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.ChangePasswordAsync(changePasswordDto);
             
             // Assert
+            _mockAccountService.Verify(s => s.ChangePasswordAsync(changePasswordDto, userId), Times.Once);
+
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal("Mot de passe modifié avec succès.", okResult.Value);
         }
@@ -76,6 +78,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.ChangePasswordAsync(new ChangePasswordDTO());
 
             // Assert
+            _mockAccountService.Verify(s => s.ChangePasswordAsync(It.IsAny<ChangePasswordDTO>(), It.IsAny<int>()), Times.Never);
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Les données fournies sont invalides.", badRequestResult.Value);
         }
@@ -96,6 +100,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.ChangePasswordAsync(new ChangePasswordDTO());
 
             // Assert
+            _mockAccountService.Verify(s => s.ChangePasswordAsync(It.IsAny<ChangePasswordDTO>(), It.IsAny<int>()), Times.Never);
+
             var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
             Assert.Equal("Utilisateur non authentifié.", unauthorizedResult.Value);
         }
@@ -128,6 +134,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.ChangePasswordAsync(changePasswordDto);
 
             // Assert
+            _mockAccountService.Verify(s => s.ChangePasswordAsync(changePasswordDto, userId), Times.Once);
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Ancien mot de passe incorrect.", badRequestResult.Value);
         }
@@ -160,6 +168,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.ChangePasswordAsync(changePasswordDto);
 
             // Assert
+            _mockAccountService.Verify(s => s.ChangePasswordAsync(changePasswordDto, userId), Times.Once);
+
             var internalServerErrorResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(StatusCodes.Status500InternalServerError, internalServerErrorResult.StatusCode);
             Assert.Equal("Une erreur interne est survenue.", internalServerErrorResult.Value);
@@ -194,6 +204,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.ChangeEmailAsync(changeEmailDto);
 
             // Assert
+            _mockAccountService.Verify(s => s.ChangeEmailAsync(changeEmailDto, userId), Times.Once);
+
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal("Adresse e-mail modifiée avec succès.", okResult.Value);
         }
@@ -218,6 +230,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.ChangeEmailAsync(new ChangeEmailDTO());
 
             // Assert
+            _mockAccountService.Verify(s => s.ChangeEmailAsync(It.IsAny<ChangeEmailDTO>(), It.IsAny<int>()), Times.Never);
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Les données fournies sont invalides.", badRequestResult.Value);
         }
@@ -238,6 +252,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.ChangeEmailAsync(new ChangeEmailDTO());
 
             // Assert
+            _mockAccountService.Verify(s => s.ChangeEmailAsync(It.IsAny<ChangeEmailDTO>(), It.IsAny<int>()), Times.Never);
+
             var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
             Assert.Equal("Utilisateur non authentifié.", unauthorizedResult.Value);
         }
@@ -269,6 +285,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.ChangeEmailAsync(changeEmailDto);
 
             // Assert
+            _mockAccountService.Verify(s => s.ChangeEmailAsync(changeEmailDto, userId), Times.Once);
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("L'adresse e-mail est déjà utilisée.", badRequestResult.Value);
         }
@@ -300,6 +318,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.ChangeEmailAsync(changeEmailDto);
 
             // Assert
+            _mockAccountService.Verify(s => s.ChangeEmailAsync(changeEmailDto, userId), Times.Once);
+
             var internalServerErrorResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(StatusCodes.Status500InternalServerError, internalServerErrorResult.StatusCode);
             Assert.Equal("Une erreur interne est survenue.", internalServerErrorResult.Value);
@@ -328,6 +348,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.DeleteAccountAsync();
 
             // Assert
+            _mockAccountService.Verify(s => s.DeleteAccountAsync(userId), Times.Once);
+
             var okResult = Assert.IsType<OkObjectResult>(result);
             Assert.Equal("Compte supprimé avec succès.", okResult.Value);
         }
@@ -352,6 +374,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.DeleteAccountAsync();
 
             // Assert
+            _mockAccountService.Verify(s => s.DeleteAccountAsync(userId), Times.Never);
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Les données fournies sont invalides.", badRequestResult.Value);
         }
@@ -372,6 +396,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.DeleteAccountAsync();
 
             // Assert
+            _mockAccountService.Verify(s => s.DeleteAccountAsync(It.IsAny<int>()), Times.Never);
+
             var unauthorizedResult = Assert.IsType<UnauthorizedObjectResult>(result);
             Assert.Equal("Utilisateur non authentifié.", unauthorizedResult.Value);
         }
@@ -397,6 +423,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.DeleteAccountAsync();
 
             // Assert
+            _mockAccountService.Verify(s => s.DeleteAccountAsync(userId), Times.Once);
+
             var badRequestResult = Assert.IsType<BadRequestObjectResult>(result);
             Assert.Equal("Utilisateur introuvable.", badRequestResult.Value);
         }
@@ -422,6 +450,8 @@ namespace SanteAnimale.Auth.Tests.UnitTests.Controllers
             var result = await _accountController.DeleteAccountAsync();
 
             // Assert
+            _mockAccountService.Verify(s => s.DeleteAccountAsync(userId), Times.Once);
+
             var internalServerErrorResult = Assert.IsType<ObjectResult>(result);
             Assert.Equal(StatusCodes.Status500InternalServerError, internalServerErrorResult.StatusCode);
             Assert.Equal("Une erreur interne est survenue.", internalServerErrorResult.Value);

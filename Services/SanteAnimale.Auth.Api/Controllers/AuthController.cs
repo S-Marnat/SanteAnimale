@@ -20,7 +20,7 @@ namespace SanteAnimale.Auth.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterDTO registerDto)
+        public async Task<IActionResult> RegisterAsync(RegisterDTO registerDto)
         {
             _logger.LogInformation("Tentative d'inscription pour l'utilisateur {Email}.", registerDto.Email);
 
@@ -39,10 +39,6 @@ namespace SanteAnimale.Auth.Api.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Unauthorized(ex.Message);
-            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Erreur inattendue lors de l'inscription pour l'utilisateur {Email}.", registerDto.Email);
@@ -51,7 +47,7 @@ namespace SanteAnimale.Auth.Api.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDTO loginDto)
+        public async Task<IActionResult> LoginAsync(LoginDTO loginDto)
         {
             _logger.LogInformation("Tentative de connexion pour l'utilisateur {Email}.", loginDto.Email);
 
@@ -79,7 +75,7 @@ namespace SanteAnimale.Auth.Api.Controllers
 
         [Authorize]
         [HttpPost("logout")]
-        public async Task<IActionResult> Logout(RefreshTokenDTO refreshTokenDto)
+        public async Task<IActionResult> LogoutAsync(RefreshTokenDTO refreshTokenDto)
         {
             _logger.LogInformation("Tentative de déconnexion.");
 
@@ -100,7 +96,7 @@ namespace SanteAnimale.Auth.Api.Controllers
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword(ForgotPasswordDTO forgotPasswordDto)
+        public async Task<IActionResult> ForgotPasswordAsync(ForgotPasswordDTO forgotPasswordDto)
         {
             _logger.LogInformation("Demande de réinitialisation du mot de passe pour l'utilisateur {Email}", forgotPasswordDto.Email);
 
@@ -123,7 +119,7 @@ namespace SanteAnimale.Auth.Api.Controllers
         }
 
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword(ResetPasswordDTO resetPasswordDto)
+        public async Task<IActionResult> ResetPasswordAsync(ResetPasswordDTO resetPasswordDto)
         {
             _logger.LogInformation("Tentative de réinitialisation du mot de passe pour l'utilisateur {Email}.", resetPasswordDto.Email);
 
@@ -150,7 +146,7 @@ namespace SanteAnimale.Auth.Api.Controllers
         }
 
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RefreshToken(RefreshTokenDTO refreshTokenDto)
+        public async Task<IActionResult> RefreshTokenAsync(RefreshTokenDTO refreshTokenDto)
         {
             _logger.LogInformation("Tentative de rafraîchissement du token.");
 

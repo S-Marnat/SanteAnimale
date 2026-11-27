@@ -54,7 +54,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             {
                 _logger.LogWarning("Echec de la connexion pour l'utilisateur {Email} : email non trouvé.",
                     loginDto.Email);
-                throw new UnauthorizedAccessException("Identifiants incorrects");
+                throw new UnauthorizedAccessException("Identifiants incorrects.");
             }
 
             // Vérifier si le mot de passe correspond
@@ -71,7 +71,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             {
                 _logger.LogWarning("Echec de la connexion pour l'utilisateur {Email} : mot de passe incorrect.",
                     loginDto.Email);
-                throw new UnauthorizedAccessException("Identifiants incorrects");
+                throw new UnauthorizedAccessException("Identifiants incorrects.");
             }
 
             // Générer un token JWT et un refresh token
@@ -94,7 +94,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             if (!revoked)
             {
                 _logger.LogWarning("Echec de la révocation du token de rafraîchissement.");
-                throw new UnauthorizedAccessException("Token de rafraîchissement invalide");
+                throw new UnauthorizedAccessException("Token de rafraîchissement invalide.");
             }
 
             _logger.LogInformation("Déconnexion réussie.");
@@ -107,7 +107,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             if (result == null)
             {
                 _logger.LogWarning("Echec du rafraîchissement du token : token de rafraîchissement invalide.");
-                throw new UnauthorizedAccessException("Token de rafraîchissement invalide");
+                throw new UnauthorizedAccessException("Token de rafraîchissement invalide.");
             }
 
             _logger.LogInformation("Rafraîchissement du token réussi.");
@@ -128,7 +128,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             {
                 _logger.LogWarning("Echec de l'inscription pour l'utilisateur {Email} : email déjà utilisé.",
                     registerDto.Email);
-                throw new InvalidOperationException("Cette adresse e-mail est déjà utilisée");
+                throw new InvalidOperationException("Cette adresse e-mail est déjà utilisée.");
             }
 
             // Créer un nouvel utilisateur
@@ -180,7 +180,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             {
                 _logger.LogWarning("Echec de la réinitialisation du mot de passe pour l'utilisateur {Email} : utilisateur non trouvé.",
                     resetPasswordDto.Email);
-                throw new InvalidOperationException("Utilisateur non trouvé");
+                throw new InvalidOperationException("Utilisateur non trouvé.");
             }
 
             // Vérifier si les mots de passe correspondent
@@ -188,7 +188,7 @@ namespace SanteAnimale.Auth.Api.Services.Implementations
             {
                 _logger.LogWarning("Echec de la réinitialisation du mot de passe pour l'utilisateur {Email} : les mots de passe ne correspondent pas.",
                     resetPasswordDto.Email);
-                throw new InvalidOperationException("Les mots de passe ne correspondent pas");
+                throw new InvalidOperationException("Les mots de passe ne correspondent pas.");
             }
 
             // Réinitialiser le mot de passe
